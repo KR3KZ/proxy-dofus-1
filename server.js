@@ -8,14 +8,11 @@ const tcp_server = {
 const login = {
   loginIp: "54.72.75.192",
   loginPort: 443,
-  key: "",
-  auth: false,
 };
 
 const game = {
   gameIp: "",
-  loginPort: 0,
-  auth: false,
+  gamePort: 0,
 };
 
 //Create our proxy that will handle packets
@@ -25,13 +22,12 @@ const server = net.createServer(function (socket) {
   //Create connexion to the real server
   client.connect(login.loginPort, login.loginIp, function () {
     console.log(`[Server] : Connected to ${login.loginIp}:${login.loginPort}`);
-    login.auth = true;
   });
 
   //Transfert packets to our client
   client.on("data", function (data) {
-    socket.write(data);
     console.log(`[Server] : ${data.toString()}`);
+    socket.write(data);
   });
 
   client.on("error", function () {
@@ -46,8 +42,8 @@ const server = net.createServer(function (socket) {
 
   //Transfert packets to the server
   socket.on("data", function (data) {
-    client.write(data);
     console.log(`[Client] : ${data.toString()}`);
+    client.write(data);
   });
 
   socket.on("error", function (err) {
